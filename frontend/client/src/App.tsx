@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useMemo, useRef, useState, useEffect } from "react";
+import { useMemo, useRef, useState, useEffect  } from "react";
 import {
   Activity,
   ArrowUpRight,
@@ -59,17 +59,223 @@ function OpportunityCard({ item, saved, onSave }) {
 export default function App() {
   const [language, setLanguage] = useState("EN");
   const [voiceState, setVoiceState] = useState("idle");
-  const [showTranscription, setShowTranscription] = useState(false);
+  const [transcription, setTranscription] = useState("");
+  
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const streamRef = useRef(null);
+
+const [showTranscription, setShowTranscription] = useState(false);
   const [saved, setSaved] = useState([]);
   const [activeFilter, setActiveFilter] = useState("All opportunities");
   const [query, setQuery] = useState("");
   const [notice, setNotice] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const timerRef = useRef(null);
 
-  useEffect(() => () => clearTimeout(timerRef.current), []);
   const filtered = useMemo(() => opportunities.filter((item) => (activeFilter === "All opportunities" || item.type === activeFilter) && `${item.title} ${item.location}`.toLowerCase().includes(query.toLowerCase())), [activeFilter, query]);
-  const handleVoice = () => { if (voiceState !== "idle" && voiceState !== "transcribed") return; setShowTranscription(false); setVoiceState("listening"); timerRef.current = setTimeout(() => setVoiceState("processing"), 900); timerRef.current = setTimeout(() => { setVoiceState("transcribed"); setShowTranscription(true); }, 2100); };
+  const startVoiceRecording = async () => {
+    try {
+      console.log("🎤 Requesting microphone...");
+
+      setShowTranscription(false);
+      setTranscription("");
+
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+        },
+      });
+
+      streamRef.current = stream;
+
+      console.log("🎤 Microphone permission granted");
+
+      let mimeType = "";
+
+      if (MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) {
+        mimeType = "audio/webm;codecs=opus";
+      } else if (MediaRecorder.isTypeSupported("audio/webm")) {
+        mimeType = "audio/webm";
+      }
+
+      const recorder = mimeType
+        ? new MediaRecorder(stream, { mimeType })
+        : new MediaRecorder(stream);
+
+      mediaRecorderRef.current = recorder;
+      audioChunksRef.current = [];
+
+      recorder.ondataavailable = (event) => {
+        console.log("📦 Audio chunk:", event.data.size, "bytes");
+
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      recorder.onerror = (event) => {
+        console.error("❌ MediaRecorder error:", event);
+      };
+
+      recorder.onstop = async () => {
+        console.log("🛑 Recording stopped");
+
+        setVoiceState("processing");
+
+        const audioBlob = new Blob(audioChunksRef.current, {
+          type: recorder.mimeType || "audio/webm",
+        });
+
+        console.log("🎧 Recorded audio:", audioBlob.size, "bytes");
+
+        if (audioBlob.size === 0) {
+          setVoiceState("idle");
+          alert("No audio was recorded.");
+          return;
+        }
+
+        const formData = new FormData();
+
+        formData.append(
+          "file",
+          audioBlob,
+          "voice.webm"
+        );
+
+        try {
+          console.log("📡 Sending audio to FastAPI...");
+
+          const response = await fetch(
+            "http://127.0.0.1:8000/pipeline/process-voice",
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+
+          console.log(
+            "📡 Backend status:",
+            response.status
+          );
+
+          if (!response.ok) {
+            const errorText = await response.text();
+
+            throw new Error(
+              `Server ${response.status}: ${errorText}`
+            );
+          }
+
+          const data = await response.json();
+
+          console.log(
+            "✅ SraVaani response:",
+            data
+          );
+
+          setTranscription(
+            data.transcription || "No speech detected"
+          );
+
+          setShowTranscription(true);
+          setVoiceState("transcribed");
+
+        } catch (error) {
+          console.error(
+            "❌ Voice processing error:",
+            error
+          );
+
+          setVoiceState("idle");
+
+          alert(
+            "Voice processing failed. Check the FastAPI terminal."
+          );
+
+        } finally {
+          if (streamRef.current) {
+            streamRef.current
+              .getTracks()
+              .forEach((track) => track.stop());
+
+            streamRef.current = null;
+          }
+
+          mediaRecorderRef.current = null;
+        }
+      };
+
+      recorder.start(250);
+
+      setVoiceState("listening");
+
+      console.log("🔴 RECORDING STARTED");
+      console.log(
+        "🎤 Recording will continue until you click the microphone again."
+      );
+
+    } catch (error) {
+      console.error(
+        "❌ Microphone error:",
+        error
+      );
+
+      setVoiceState("idle");
+
+      alert(
+        "Microphone permission was denied or microphone is unavailable."
+      );
+    }
+  };
+
+  const stopVoiceRecording = () => {
+    const recorder = mediaRecorderRef.current;
+
+    if (!recorder) {
+      console.log("⚠️ No active recorder");
+      return;
+    }
+
+    if (recorder.state !== "recording") {
+      console.log(
+        "⚠️ Recorder state:",
+        recorder.state
+      );
+      return;
+    }
+
+    console.log("🛑 Manual stop requested");
+
+    recorder.stop();
+  };
+
+  const handleVoice = () => {
+    console.log(
+      "🎤 Voice button:",
+      voiceState
+    );
+
+    if (
+      voiceState === "idle" ||
+      voiceState === "transcribed"
+    ) {
+      startVoiceRecording();
+      return;
+    }
+
+    if (voiceState === "listening") {
+      stopVoiceRecording();
+      return;
+    }
+
+    if (voiceState === "processing") {
+      console.log(
+        "⏳ Still processing..."
+      );
+    }
+  };
   const notify = (message) => { setNotice(message); window.setTimeout(() => setNotice(""), 2600); };
 
   return <div className="app-shell">
@@ -84,7 +290,7 @@ export default function App() {
       <main className="content">
         <section className="welcome-row"><div><div className="section-kicker"><span className="live-dot" />Panchayat workspace · Live</div><h1>Good morning, Arun <span>✦</span></h1><p>Turn local signals into better livelihood decisions for your community.</p></div><button className="outline-button" onClick={() => notify("Report export queued")}> <FileCheck2 size={16} /> Export report</button></section>
         <section className="hero-card"><div className="hero-copy"><div className="hero-pill"><Sparkles size={14} />AI-assisted, evidence-first</div><h2>What would you like to<br /><em>explore today?</em></h2><p>Ask in your own language. GramRozgar compares local demand, nearby enterprises, and available schemes before it recommends an idea.</p><div className="question-chip">“Can I start a dairy unit in our village?”</div></div><div className="voice-wrap"><button className={`voice-button ${voiceState}`} onClick={handleVoice} aria-label="Ask by voice"><span className="voice-ring ring-one" /><span className="voice-ring ring-two" /><Mic size={30} /> <span>{voiceState === "listening" ? "Listening…" : voiceState === "processing" ? "Thinking…" : voiceState === "transcribed" ? "Ask again" : "Tap to speak"}</span></button><div className="voice-meta"><span className="language-dot" />{language === "EN" ? "English" : language} · Voice enabled</div></div></section>
-        {showTranscription && <div className="transcription"><div className="transcription-icon"><Check size={17} /></div><div><span>Question understood</span><strong>“Can I start a dairy unit in our village?”</strong></div><button onClick={() => setShowTranscription(false)}><X size={16} /></button></div>}
+        {showTranscription && <div className="transcription"><div className="transcription-icon"><Check size={17} /></div><div><span>Question understood</span><strong>“{transcription}”</strong></div><button onClick={() => setShowTranscription(false)}><X size={16} /></button></div>}
         <section className="stats-grid"><StatCard icon={Users} value="1,284" label="Active workers in your block" trend="8.4%" color="teal" /><StatCard icon={TrendingUp} value="₹18.6L" label="Capital unlocked this month" trend="12.1%" color="orange" /><StatCard icon={MapPin} value="42" label="Verified local opportunities" trend="6 new" color="purple" /><StatCard icon={ShieldCheck} value="96%" label="Evidence confidence score" trend="Strong" color="blue" /></section>
         <div className="section-header"><div><p className="eyebrow">Decision support</p><h2>Explore local opportunities</h2><p>Recommendations shaped by evidence from your panchayat.</p></div><div className="search-box"><Search size={16} /><input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search ideas or places" /></div></div>
         <div className="filter-row">{["All opportunities", "Dairy & livestock", "Food processing", "Services & crafts"].map((filter) => <button key={filter} className={activeFilter === filter ? "active" : ""} onClick={() => setActiveFilter(filter)}>{filter}</button>)}</div>
