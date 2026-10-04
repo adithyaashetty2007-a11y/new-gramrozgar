@@ -1,0 +1,61 @@
+month,phase,opening_balance,disbursed,interest,payment,principal_component,closing_balance
+1,Moratorium (interest-only),0.0,475000.0,3760.42,3760.42,0.0,475000.0
+2,Moratorium (interest-only),475000.0,0.0,3760.42,3760.42,0.0,475000.0
+3,Moratorium (interest-only),475000.0,0.0,3760.42,3760.42,0.0,475000.0
+4,Moratorium (interest-only),475000.0,0.0,3760.42,3760.42,0.0,475000.0
+5,Moratorium (interest-only),475000.0,0.0,3760.42,3760.42,0.0,475000.0
+6,Moratorium (interest-only),475000.0,0.0,3760.42,3760.42,0.0,475000.0
+7,Repayment (pre subsidy adjustment),475000.0,0.0,3760.42,10844.31,7083.9,467916.1
+8,Repayment (pre subsidy adjustment),467916.1,0.0,3704.34,10844.31,7139.98,460776.13
+9,Repayment (pre subsidy adjustment),460776.13,0.0,3647.81,10844.31,7196.5,453579.62
+10,Repayment (pre subsidy adjustment),453579.62,0.0,3590.84,10844.31,7253.47,446326.15
+11,Repayment (pre subsidy adjustment),446326.15,0.0,3533.42,10844.31,7310.9,439015.25
+12,Repayment (pre subsidy adjustment),439015.25,0.0,3475.54,10844.31,7368.78,431646.47
+13,Repayment (pre subsidy adjustment),431646.47,0.0,3417.2,10844.31,7427.11,424219.36
+14,Repayment (pre subsidy adjustment),424219.36,0.0,3358.4,10844.31,7485.91,416733.45
+15,Repayment (pre subsidy adjustment),416733.45,0.0,3299.14,10844.31,7545.17,409188.28
+16,Repayment (pre subsidy adjustment),409188.28,0.0,3239.41,10844.31,7604.91,401583.37
+17,Repayment (pre subsidy adjustment),401583.37,0.0,3179.2,10844.31,7665.11,393918.26
+18,Repayment (pre subsidy adjustment),393918.26,0.0,3118.52,10844.31,7725.79,386192.47
+19,Repayment (pre subsidy adjustment),386192.47,0.0,3057.36,10844.31,7786.96,378405.51
+20,Repayment (pre subsidy adjustment),378405.51,0.0,2995.71,10844.31,7848.6,370556.91
+21,Repayment (pre subsidy adjustment),370556.91,0.0,2933.58,10844.31,7910.74,362646.17
+22,Repayment (pre subsidy adjustment),362646.17,0.0,2870.95,10844.31,7973.36,354672.81
+23,Repayment (pre subsidy adjustment),354672.81,0.0,2807.83,10844.31,8036.49,346636.32
+24,Repayment (pre subsidy adjustment),346636.32,0.0,2744.2,10844.31,8100.11,338536.21
+25,Repayment (pre subsidy adjustment),338536.21,0.0,2680.08,10844.31,8164.24,330371.97
+26,Repayment (pre subsidy adjustment),330371.97,0.0,2615.44,10844.31,8228.87,322143.11
+27,Repayment (pre subsidy adjustment),322143.11,0.0,2550.3,10844.31,8294.01,313849.09
+28,Repayment (pre subsidy adjustment),313849.09,0.0,2484.64,10844.31,8359.67,305489.42
+29,Repayment (pre subsidy adjustment),305489.42,0.0,2418.46,10844.31,8425.86,297063.56
+30,Repayment (pre subsidy adjustment),297063.56,0.0,2351.75,10844.31,8492.56,288571.0
+31,Repayment (pre subsidy adjustment),288571.0,0.0,2284.52,10844.31,8559.79,280011.21
+32,Repayment (pre subsidy adjustment),280011.21,0.0,2216.76,10844.31,8627.56,271383.65
+33,Repayment (pre subsidy adjustment),271383.65,0.0,2148.45,10844.31,8695.86,262687.79
+34,Repayment (pre subsidy adjustment),262687.79,0.0,2079.61,10844.31,8764.7,253923.09
+35,Repayment (pre subsidy adjustment),253923.09,0.0,2010.22,10844.31,8834.09,245089.0
+36,Repayment (pre subsidy adjustment),245089.0,0.0,1940.29,10844.31,8904.03,236184.97
+37,Repayment (post subsidy adjustment),236184.97,0.0,484.38,2809.28,2324.9,58860.08
+38,Repayment (post subsidy adjustment),58860.08,0.0,465.98,2809.28,2343.3,56516.78
+39,Repayment (post subsidy adjustment),56516.78,0.0,447.42,2809.28,2361.85,54154.92
+40,Repayment (post subsidy adjustment),54154.92,0.0,428.73,2809.28,2380.55,51774.37
+41,Repayment (post subsidy adjustment),51774.37,0.0,409.88,2809.28,2399.4,49374.98
+42,Repayment (post subsidy adjustment),49374.98,0.0,390.89,2809.28,2418.39,46956.59
+43,Repayment (post subsidy adjustment),46956.59,0.0,371.74,2809.28,2437.54,44519.05
+44,Repayment (post subsidy adjustment),44519.05,0.0,352.44,2809.28,2456.83,42062.21
+45,Repayment (post subsidy adjustment),42062.21,0.0,332.99,2809.28,2476.28,39585.93
+46,Repayment (post subsidy adjustment),39585.93,0.0,313.39,2809.28,2495.89,37090.04
+47,Repayment (post subsidy adjustment),37090.04,0.0,293.63,2809.28,2515.65,34574.39
+48,Repayment (post subsidy adjustment),34574.39,0.0,273.71,2809.28,2535.56,32038.83
+49,Repayment (post subsidy adjustment),32038.83,0.0,253.64,2809.28,2555.64,29483.19
+50,Repayment (post subsidy adjustment),29483.19,0.0,233.41,2809.28,2575.87,26907.32
+51,Repayment (post subsidy adjustment),26907.32,0.0,213.02,2809.28,2596.26,24311.06
+52,Repayment (post subsidy adjustment),24311.06,0.0,192.46,2809.28,2616.81,21694.25
+53,Repayment (post subsidy adjustment),21694.25,0.0,171.75,2809.28,2637.53,19056.72
+54,Repayment (post subsidy adjustment),19056.72,0.0,150.87,2809.28,2658.41,16398.31
+55,Repayment (post subsidy adjustment),16398.31,0.0,129.82,2809.28,2679.46,13718.85
+56,Repayment (post subsidy adjustment),13718.85,0.0,108.61,2809.28,2700.67,11018.18
+57,Repayment (post subsidy adjustment),11018.18,0.0,87.23,2809.28,2722.05,8296.13
+58,Repayment (post subsidy adjustment),8296.13,0.0,65.68,2809.28,2743.6,5552.53
+59,Repayment (post subsidy adjustment),5552.53,0.0,43.96,2809.28,2765.32,2787.21
+60,Repayment (post subsidy adjustment),2787.21,0.0,22.07,2809.28,2787.21,0.0

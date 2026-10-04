@@ -6,6 +6,7 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from voice.asr import transcribe
+from business_advisor import analyze_business
 
 
 # ==========================================
@@ -13,7 +14,7 @@ from voice.asr import transcribe
 # ==========================================
 
 app = FastAPI(
-    title="GramRozgar Local SraVaani Voice API"
+    title="GramRozgar AI Business Advisor API"
 )
 
 
@@ -38,7 +39,7 @@ app.add_middleware(
 def home():
     return {
         "status": "ok",
-        "message": "GramRozgar Local SraVaani Voice API is running"
+        "message": "GramRozgar AI Business Advisor API is running"
     }
 
 
@@ -71,7 +72,6 @@ async def process_voice(
             audio_data = await file.read()
 
             temp.write(audio_data)
-
 
         print()
         print("====================================")
@@ -196,3 +196,47 @@ async def process_voice(
                 print(
                     f"Deleted temporary file: {path}"
                 )
+
+
+# ==========================================
+# BUSINESS ADVISOR
+# ==========================================
+
+@app.get("/advisor/analyze")
+def advisor_analyze(question: str):
+
+    try:
+
+        print()
+        print("====================================")
+        print("       BUSINESS ADVISOR REQUEST")
+        print("====================================")
+        print(f"Question: {question}")
+
+
+        result = analyze_business(question)
+
+
+        print()
+        print("BUSINESS ADVISOR RESULT")
+        print("====================================")
+        print(result)
+        print("====================================")
+
+
+        return {
+            "status": "success",
+            "result": result
+        }
+
+
+    except Exception as error:
+
+        print()
+        print("BUSINESS ADVISOR ERROR:")
+        print(error)
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(error)
+        )
